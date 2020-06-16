@@ -1,5 +1,5 @@
 # TODO list
-- **call test method**
+- ~~call test method~~
 - initially call setUP
 - finally call tearDown
 - call tearDown even if test method fails
