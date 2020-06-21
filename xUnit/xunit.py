@@ -2,12 +2,16 @@
 class TestResult:
     def __init__(self):
         self.runCount = 0
+        self.errorCount = 0
 
     def testStarted(self):
         self.runCount = self.runCount+1
 
+    def testFailed(self):
+        self.errorCount = self.errorCount+1
+
     def summary(self):
-        return "%d run, 0 failed" % self.runCount
+        return "%d run, %d failed" % (self.runCount, self.errorCount)
 
 
 class TestCase:
@@ -24,8 +28,13 @@ class TestCase:
         result = TestResult()
         result.testStarted()
         self.setUp()
-        method = getattr(self, self.name)
-        method()
+
+        try:
+            method = getattr(self, self.name)
+            method()
+        except:  # noqa: E722
+            result.testFailed()
+
         self.tearDown()
         return result
 
@@ -45,11 +54,6 @@ class WasRun(TestCase):
 
 
 class TestCaseTest(TestCase):
-    def testFailedResult(self):
-        test = WasRun("testBrokenMethod")
-        result = test.run()
-        assert("1 run, 1 failed" == result.summary())
-
     def testTemplateMethod(self):
         test = WasRun("testMethod")
         test.run()
@@ -60,7 +64,19 @@ class TestCaseTest(TestCase):
         result = test.run()
         assert("1 run, 0 failed" == result.summary())
 
+    def testFailedResult(self):
+        test = WasRun("testBrokenMethod")
+        result = test.run()
+        assert("1 run, 1 failed" == result.summary())
 
-TestCaseTest("testTemplateMethod").run()
-TestCaseTest("testResult").run()
-# TestCaseTest("testFailedResult").run()
+    def testFailedResultFormmating(self):
+        result = TestResult()
+        result.testStarted()
+        result.testFailedResult()
+        assert("1 run, 1 failed" == result.summary())
+
+
+print(TestCaseTest("testTemplateMethod").run().summary())
+print(TestCaseTest("testResult").run().summary())
+print(TestCaseTest("testFailedResult").run().summary())
+print(TestCaseTest("testFailedResultFormmating").run().summary())
