@@ -64,19 +64,19 @@ class TestCaseTest(TestCase):
         result = test.run()
         assert("1 run, 0 failed" == result.summary())
 
-    def testFailedResult(self):
-        test = WasRun("testBrokenMethod")
-        result = test.run()
-        assert("1 run, 1 failed" == result.summary())
-
     def testFailedResultFormmating(self):
         result = TestResult()
         result.testStarted()
         result.testFailedResult()
         assert("1 run, 1 failed" == result.summary())
 
+    def testFailedResult(self):
+        test = WasRun("testBrokenMethod")
+        result = test.run()
+        assert("1 run, 1 failed" == result.summary())
+
 
 print(TestCaseTest("testTemplateMethod").run().summary())
 print(TestCaseTest("testResult").run().summary())
-print(TestCaseTest("testFailedResult").run().summary())
 print(TestCaseTest("testFailedResultFormmating").run().summary())
+print(TestCaseTest("testFailedResult").run().summary())
