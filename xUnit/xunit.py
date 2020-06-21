@@ -26,9 +26,9 @@ class TestCase:
 
     def run(self, result):
         result.testStarted()
-        self.setUp()
 
         try:
+            self.setUp()
             method = getattr(self, self.name)
             method()
         except:  # noqa: E722
@@ -61,6 +61,14 @@ class WasRun(TestCase):
 
     def tearDown(self):
         self.log = self.log+"tearDown "
+
+
+class BrokenSetUp(TestCase):
+    def setUp(self):
+        raise Exception
+
+    def testMethod(self):
+        pass
 
 
 class TestCaseTest(TestCase):
@@ -99,6 +107,11 @@ class TestCaseTest(TestCase):
         test.run(self.result)
         assert("setUp tearDown " == test.log)
 
+    def testCatchErrorsOnSetUp(self):
+        test = BrokenSetUp("testMethod")
+        test.run(self.result)
+        assert("1 run, 1 failed" == self.result.summary())
+
 
 suite = TestSuite()
 suite.add(TestCaseTest("testTemplateMethod"))
@@ -107,6 +120,7 @@ suite.add(TestCaseTest("testFailedResultFormmating"))
 suite.add(TestCaseTest("testFailedResult"))
 suite.add(TestCaseTest("testSuite"))
 suite.add(TestCaseTest("testCallTearDownOnFailed"))
+suite.add(TestCaseTest("testCatchErrorsOnSetUp"))
 result = TestResult()
 suite.run(result)
 print(result.summary())
