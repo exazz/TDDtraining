@@ -77,14 +77,14 @@ class TestCaseTest(TestCase):
         test.run(self.result)
         assert("1 run, 0 failed" == self.result.summary())
 
-    def testFailedResultFormmating(self):
-        self.result.testStarted()
-        self.result.testFailed()
-        assert("1 run, 1 failed" == self.result.summary())
-
     def testFailedResult(self):
         test = WasRun("testBrokenMethod")
         test.run(self.result)
+        assert("1 run, 1 failed" == self.result.summary())
+
+    def testFailedResultFormmating(self):
+        self.result.testStarted()
+        self.result.testFailed()
         assert("1 run, 1 failed" == self.result.summary())
 
     def testSuite(self):
@@ -104,10 +104,3 @@ suite.add(TestCaseTest("testSuite"))
 result = TestResult()
 suite.run(result)
 print(result.summary())
-'''
-print(TestCaseTest("testTemplateMethod").run().summary())
-print(TestCaseTest("testResult").run().summary())
-print(TestCaseTest("testFailedResultFormmating").run().summary())
-print(TestCaseTest("testFailedResult").run().summary())
-print(TestCaseTest("testSuite").run().summary())
-'''
