@@ -33,8 +33,8 @@ class TestCase:
             method()
         except:  # noqa: E722
             result.testFailed()
-
-        self.tearDown()
+        finally:
+            self.tearDown()
 
 
 class TestSuite:
@@ -94,6 +94,11 @@ class TestCaseTest(TestCase):
         suite.run(self.result)
         assert("2 run, 1 failed" == self.result.summary())
 
+    def testCallTearDownOnFailed(self):
+        test = WasRun("testBrokenMethod")
+        test.run(self.result)
+        assert("setUp tearDown " == test.log)
+
 
 suite = TestSuite()
 suite.add(TestCaseTest("testTemplateMethod"))
@@ -101,6 +106,7 @@ suite.add(TestCaseTest("testResult"))
 suite.add(TestCaseTest("testFailedResultFormmating"))
 suite.add(TestCaseTest("testFailedResult"))
 suite.add(TestCaseTest("testSuite"))
+suite.add(TestCaseTest("testCallTearDownOnFailed"))
 result = TestResult()
 suite.run(result)
 print(result.summary())
