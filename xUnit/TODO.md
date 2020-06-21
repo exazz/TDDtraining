@@ -7,3 +7,4 @@
 - ~~output results of tests~~
 - ~~record string log on WasRun~~
 - catch errors on setUp
+- make TestSuite from TestCase
